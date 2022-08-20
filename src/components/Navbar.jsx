@@ -16,6 +16,7 @@ function Navbar() {
     return (
       <div>
         <Link to="/">Home</Link>
+        <Link to="/games">Games Gallery</Link>
         <button onClick={handleLogout}>Log out</button>
       </div>
     );
@@ -23,6 +24,7 @@ function Navbar() {
     return (
       <div>
         <Link to="/">Home</Link>
+        <Link to="/games">Games Gallery</Link>
         <Link to="/signup">Registro</Link>
         <Link to="/login">Acceder</Link>
       </div>
