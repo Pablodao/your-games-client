@@ -17,6 +17,7 @@ function Navbar() {
       <div>
         <Link to="/">Home</Link>
         <Link to="/games">Games Gallery</Link>
+        <Link to="/my-profile">My profile</Link>
         <button onClick={handleLogout}>Log out</button>
       </div>
     );
