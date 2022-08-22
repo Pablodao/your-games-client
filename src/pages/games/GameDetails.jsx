@@ -5,32 +5,43 @@ import CommentInput from "../../components/CommentInput";
 import Comment from "../../components/Comment";
 //import { AuthContext } from "../../context/auth.context";
 import { newCommentService } from "../../services/comment.services";
-import { gameDetailsService } from "../../services/game.services";
+import {
+  gameDetailsService,
+  newGameService,
+} from "../../services/game.services";
 
 function GameDetails() {
   //const { user } = useContext(AuthContext);
   const { gameId } = useParams();
-  const [gameInfo, setGameInfo] = useState({});
+  const [gameInfo, setGameInfo] = useState(null);
+  const [apiInfo, setApiInfo] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const [commentTitle, setCommentTitle] = useState("");
   const [isCommentTitleValid, setIsCommentTitleValid] = useState(true);
   const [comment, setComment] = useState("");
   const [isCommentValid, setIsCommentValid] = useState(true);
-  const [id, setId] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    getApiInfo();
     getGameInfo();
   }, []);
 
-  const getGameInfo = async () => {
+  const getApiInfo = async () => {
     try {
-      const gameInfo = await gameDetailsService(gameId);
-      setId(gameInfo.data._id);
       const response = await axios(
         `https://api.rawg.io/api/games/${gameId}?key=848748eade3647ecbf3ac299d1c7b50c`
       );
+      setApiInfo(response.data);
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const getGameInfo = async () => {
+    try {
+      const response = await gameDetailsService(gameId);
       setGameInfo(response.data);
       setIsFetching(false);
     } catch (error) {
@@ -48,18 +59,43 @@ function GameDetails() {
     return setComment(event.target.value);
   };
   const handlePostComment = async () => {
-    const newComment = {
-      title: commentTitle,
-      content: comment,
-      game: id,
-    };
- 
-    try {
-      await newCommentService(newComment, id);
-      setCommentTitle("");
-      setComment("");
-    } catch (error) {
-      navigate("/error")
+    console.log("gameInfo", gameInfo);
+    if (!gameInfo) {
+      const response = await newGameService(gameId);
+      setGameInfo(response.data);
+      console.log("RESPONSE", response);
+
+      const newComment = {
+        title: commentTitle,
+        content: comment,
+        game: response.data._id,
+      };
+
+      console.log("response", response.data);
+
+      try {
+        await newCommentService(newComment, response.data._id);
+        setCommentTitle("");
+        setComment("");
+      } catch (error) {
+        // navigate("/error");
+        console.log("error 1", error);
+      }
+    } else {
+      const newComment = {
+        title: commentTitle,
+        content: comment,
+        game: gameInfo?._id,
+      };
+
+      try {
+        await newCommentService(newComment, gameInfo?._id);
+        setCommentTitle("");
+        setComment("");
+      } catch (error) {
+        // navigate("/error");
+        console.log("error 2", error);
+      }
     }
   };
 
@@ -82,20 +118,17 @@ function GameDetails() {
     return <h3>...Loading</h3>;
   }
 
-
-  const { name, background_image, description_raw, website } = gameInfo;
   return (
     <div>
       <h1>Detalles del Juego</h1>
       <div>
-        <h2>{name}</h2>
-        <img src={background_image} alt="game" />
-        <p>{description_raw}</p>
-        <a href={website}>Website</a>
+        <h2>{apiInfo?.name}</h2>
+        <img src={apiInfo?.background_image} alt="game" />
+        <p>{apiInfo?.description_raw}</p>
+        <a href={apiInfo?.website}>Website</a>
       </div>
 
       <CommentInput
-        id={id}
         commentTitle={commentTitle}
         isCommentTitleValid={isCommentTitleValid}
         onChangeTitle={handleCommentTitleChange}
@@ -104,7 +137,13 @@ function GameDetails() {
         onChangeComment={handleCommentChange}
         handleCommentSubmit={handleCommentSubmit}
       />
-      <Comment id={id} commentTitle={commentTitle} comment={comment} />
+      {gameInfo?.comments.length > 0 && (
+        <Comment
+          id={gameInfo?._id}
+          commentTitle={commentTitle}
+          comment={comment}
+        />
+      )}
     </div>
   );
 }
