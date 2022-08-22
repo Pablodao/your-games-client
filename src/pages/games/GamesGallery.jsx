@@ -29,8 +29,6 @@ function GamesGallery() {
             <div style={{ border: "1px solid black" }}>
               <h2>{eachGame.name}</h2>
               <img src={eachGame.background_image} height="200px" alt="" />
-              <p>Rating:5</p>
-              <p>Comments: 100</p>
             </div>
           </Link>
         );
