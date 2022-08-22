@@ -25,9 +25,9 @@ function GamesGallery() {
     <div>
       {games.map((eachGame) => {
         return (
-            //TODO Cambiar key por {eachGame._id}
+          //TODO Cambiar key por {eachGame._id}
           <Link key={eachGame.id} to={`/games/${eachGame.id}`}>
-            <div  style={{ border: "1px solid black" }}>
+            <div style={{ border: "1px solid black" }}>
               <h2>{eachGame.name}</h2>
               <img src={eachGame.background_image} height="200px" alt="" />
               <p>Rating:5</p>

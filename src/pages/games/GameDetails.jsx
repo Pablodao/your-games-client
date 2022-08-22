@@ -1,25 +1,82 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import CommentInput from "../../components/CommentInput";
+import Comment from "../../components/Comment";
+import { AuthContext } from "../../context/auth.context";
+import { newCommentService } from "../../services/comment.services";
+import { gameDetailsService } from "../../services/game.services";
+
 function GameDetails() {
+  const { user } = useContext(AuthContext);
   const { gameId } = useParams();
   const [gameInfo, setGameInfo] = useState({});
   const [isFetching, setIsFetching] = useState(true);
+  //TODO Comentarios
+  const [commentTitle, setCommentTitle] = useState("");
+  const [isCommentTitleValid, setIsCommentTitleValid] = useState(true);
+  const [comment, setComment] = useState("");
+  const [isCommentValid, setIsCommentValid] = useState(true);
+  const [id, setId] = useState("");
+  //TODO Comentarios
+
   const navigate = useNavigate();
+
   useEffect(() => {
     getGameInfo();
   }, []);
 
   const getGameInfo = async () => {
     try {
+      const gameInfo = await gameDetailsService(gameId);
+      setId(gameInfo.data._id);
       const response = await axios(
         `https://api.rawg.io/api/games/${gameId}?key=848748eade3647ecbf3ac299d1c7b50c`
       );
-      console.log(response);
       setGameInfo(response.data);
       setIsFetching(false);
     } catch (error) {
       navigate("/error");
+    }
+  };
+
+  const handleCommentTitleChange = (event) => {
+    setIsCommentTitleValid(true);
+    return setCommentTitle(event.target.value);
+  };
+
+  const handleCommentChange = (event) => {
+    setIsCommentValid(true);
+    return setComment(event.target.value);
+  };
+  const handlePostComment = async () => {
+    const newComment = {
+      title: commentTitle,
+      content: comment,
+      game: id,
+    };
+    console.log(newComment);
+    try {
+      await newCommentService(newComment, id);
+      setCommentTitle("");
+      setComment("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCommentSubmit = (event) => {
+    event.preventDefault();
+
+    if (!commentTitle) {
+      setIsCommentTitleValid(false);
+    }
+    if (!comment) {
+      setIsCommentValid(false);
+    }
+
+    if (commentTitle && comment) {
+      handlePostComment();
     }
   };
 
@@ -38,6 +95,17 @@ function GameDetails() {
         <p>{description_raw}</p>
         <a href={website}>Website</a>
       </div>
+
+      <CommentInput
+        commentTitle={commentTitle}
+        isCommentTitleValid={isCommentTitleValid}
+        onChangeTitle={handleCommentTitleChange}
+        comment={comment}
+        isCommentValid={isCommentValid}
+        onChangeComment={handleCommentChange}
+        handleCommentSubmit={handleCommentSubmit}
+      />
+      <Comment id={id} />
     </div>
   );
 }
