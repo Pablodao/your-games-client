@@ -38,9 +38,7 @@ function Signup() {
       await signupService(newUser);
       navigate("/login")
     } catch (error) {
-      console.log(error);
-      console.log(error.response.status);
-      console.log(error.response.data.errorMessage);
+      navigate("/signup")
       setErrorMessage(error.response.data.errorMessage);
     }
   };

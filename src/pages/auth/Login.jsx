@@ -27,10 +27,10 @@ function Login() {
       access: user,
       password: password,
     };
-    console.log(loginUser);
+   
     try {
       const response = await loginService(loginUser);
-      console.log("response.data",response.data);
+     
 
       const authToken = response.data.authToken;
       localStorage.setItem("authToken", authToken);
@@ -40,9 +40,7 @@ function Login() {
       //Todo Reenviar al usuario
      navigate("/");
     } catch (error) {
-      console.log(error);
-      console.log(error.response.status);
-      console.log(error.response.data.errorMessage);
+      navigate("/login")
       setErrorMessage(error.response.data.errorMessage);
     }
   };

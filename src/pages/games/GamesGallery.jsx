@@ -5,18 +5,17 @@ import { Link } from "react-router-dom";
 
 function GamesGallery() {
   const [games, setGames] = useState([]);
-
+  
+  
   const getGames = async () => {
     try {
-      const response = await axios(
-        "https://api.rawg.io/api/games?key=848748eade3647ecbf3ac299d1c7b50c&page_size=10"
-      );
-      console.log("response GamesService", response.data.results);
+      const response = await axios( "https://api.rawg.io/api/games?key=848748eade3647ecbf3ac299d1c7b50c&page_size=10" );
       setGames(response.data.results);
     } catch (error) {
       setGames([]);
     }
   };
+
   useEffect(() => {
     getGames();
   }, []);

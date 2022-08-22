@@ -1,24 +1,22 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState /*useContext*/ } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import CommentInput from "../../components/CommentInput";
 import Comment from "../../components/Comment";
-import { AuthContext } from "../../context/auth.context";
+//import { AuthContext } from "../../context/auth.context";
 import { newCommentService } from "../../services/comment.services";
 import { gameDetailsService } from "../../services/game.services";
 
 function GameDetails() {
-  const { user } = useContext(AuthContext);
+  //const { user } = useContext(AuthContext);
   const { gameId } = useParams();
   const [gameInfo, setGameInfo] = useState({});
   const [isFetching, setIsFetching] = useState(true);
-  //TODO Comentarios
   const [commentTitle, setCommentTitle] = useState("");
   const [isCommentTitleValid, setIsCommentTitleValid] = useState(true);
   const [comment, setComment] = useState("");
   const [isCommentValid, setIsCommentValid] = useState(true);
   const [id, setId] = useState("");
-  //TODO Comentarios
 
   const navigate = useNavigate();
 
@@ -55,13 +53,13 @@ function GameDetails() {
       content: comment,
       game: id,
     };
-    console.log(newComment);
+ 
     try {
       await newCommentService(newComment, id);
       setCommentTitle("");
       setComment("");
     } catch (error) {
-      console.log(error);
+      navigate("/error")
     }
   };
 
@@ -84,7 +82,7 @@ function GameDetails() {
     return <h3>...Loading</h3>;
   }
 
-  console.log("gameInfo", gameInfo);
+
   const { name, background_image, description_raw, website } = gameInfo;
   return (
     <div>
@@ -97,6 +95,7 @@ function GameDetails() {
       </div>
 
       <CommentInput
+        id={id}
         commentTitle={commentTitle}
         isCommentTitleValid={isCommentTitleValid}
         onChangeTitle={handleCommentTitleChange}
@@ -105,7 +104,7 @@ function GameDetails() {
         onChangeComment={handleCommentChange}
         handleCommentSubmit={handleCommentSubmit}
       />
-      <Comment id={id} />
+      <Comment id={id} commentTitle={commentTitle} comment={comment} />
     </div>
   );
 }

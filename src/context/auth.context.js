@@ -11,12 +11,10 @@ const AuthWrapper = (props) => {
   const authenticateUser = async () => {
     try {
       const response = await verifyService();
-      console.log(response.data);
       setIsUserActive(true);
       setUser(response.data);
       setIsFetching(false);
     } catch (error) {
-      console.log(error);
       setIsUserActive(false);
       setUser(null);
       setIsFetching(false);
