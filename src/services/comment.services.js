@@ -12,4 +12,16 @@ const deleteCommentService = (id) => {
   return service.delete(`/comments/${id}`);
 };
 
-export { newCommentService, findCommentService , deleteCommentService};
+const editCommentService = (editedComment, id) => {
+  return service.patch(`/comments/${id}`, editedComment);
+};
+
+// const likeCommentService 
+// const dislikeCommentService
+
+export {
+  newCommentService,
+  findCommentService,
+  deleteCommentService,
+  editCommentService,
+};
