@@ -1,32 +1,32 @@
-import { useEffect, useState /*useContext*/ } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import CommentInput from "../../components/CommentInput";
 import Comment from "../../components/Comment";
-//import { AuthContext } from "../../context/auth.context";
-import { newCommentService } from "../../services/comment.services";
+import { AuthContext } from "../../context/auth.context";
 import {
-  gameDetailsService,
-  newGameService,
-} from "../../services/game.services";
+  findCommentService,
+  newCommentService,
+  deleteCommentService,
+  likeCommentService,
+  dislikeCommentService,
+} from "../../services/comment.services";
+import { gameDetailsService } from "../../services/game.services";
 
 function GameDetails() {
-  //const { user } = useContext(AuthContext);
   const { gameId } = useParams();
-  const [gameInfo, setGameInfo] = useState(null);
-  const [apiInfo, setApiInfo] = useState(null);
-  const [isFetching, setIsFetching] = useState(true);
-  const [commentTitle, setCommentTitle] = useState("");
-  const [isCommentTitleValid, setIsCommentTitleValid] = useState(true);
-  const [comment, setComment] = useState("");
-  const [isCommentValid, setIsCommentValid] = useState(true);
-
-  const navigate = useNavigate();
-
+  const { user } = useContext(AuthContext);
+  console.log(user);
   useEffect(() => {
     getApiInfo();
     getGameInfo();
+    getGameComments();
   }, []);
+
+  //* Fetch info
+  const [gameInfo, setGameInfo] = useState(null);
+  const [apiInfo, setApiInfo] = useState(null);
+  const [isFetching, setIsFetching] = useState(true);
 
   const getApiInfo = async () => {
     try {
@@ -42,12 +42,21 @@ function GameDetails() {
   const getGameInfo = async () => {
     try {
       const response = await gameDetailsService(gameId);
+
       setGameInfo(response.data);
       setIsFetching(false);
     } catch (error) {
       navigate("/error");
     }
   };
+
+  //* Comment
+
+  // Create
+  const [commentTitle, setCommentTitle] = useState("");
+  const [isCommentTitleValid, setIsCommentTitleValid] = useState(true);
+  const [comment, setComment] = useState("");
+  const [isCommentValid, setIsCommentValid] = useState(true);
 
   const handleCommentTitleChange = (event) => {
     setIsCommentTitleValid(true);
@@ -58,44 +67,21 @@ function GameDetails() {
     setIsCommentValid(true);
     return setComment(event.target.value);
   };
+
   const handlePostComment = async () => {
-    console.log("gameInfo", gameInfo);
-    if (!gameInfo) {
-      const response = await newGameService(gameId);
-      setGameInfo(response.data);
-      console.log("RESPONSE", response);
+    const newComment = {
+      title: commentTitle,
+      content: comment,
+      game: gameId,
+    };
 
-      const newComment = {
-        title: commentTitle,
-        content: comment,
-        game: response.data._id,
-      };
-
-      console.log("response", response.data);
-
-      try {
-        await newCommentService(newComment, response.data._id);
-        setCommentTitle("");
-        setComment("");
-      } catch (error) {
-        // navigate("/error");
-        console.log("error 1", error);
-      }
-    } else {
-      const newComment = {
-        title: commentTitle,
-        content: comment,
-        game: gameInfo?._id,
-      };
-
-      try {
-        await newCommentService(newComment, gameInfo?._id);
-        setCommentTitle("");
-        setComment("");
-      } catch (error) {
-        // navigate("/error");
-        console.log("error 2", error);
-      }
+    try {
+      await newCommentService(newComment, gameId);
+      setCommentTitle("");
+      setComment("");
+      getGameComments();
+    } catch (error) {
+      // navigate("/error");
     }
   };
 
@@ -113,6 +99,48 @@ function GameDetails() {
       handlePostComment();
     }
   };
+
+  // Get
+  const [comments, setComments] = useState([]);
+
+  const getGameComments = async () => {
+    try {
+      const response = await findCommentService(gameId);
+
+      setComments(response.data);
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  // Like & Dislike
+
+  const handleLike = async (id) => {
+    try {
+      await likeCommentService(id);
+      getGameComments();
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const handleDislike = async (id) => {
+    try {
+      await dislikeCommentService(id);
+      getGameComments();
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  // Delete
+  const handleDelete = (id) => {
+    deleteCommentService(id);
+    getGameComments();
+  };
+
+  //* Error handle
+  const navigate = useNavigate();
 
   if (isFetching === true) {
     return <h3>...Loading</h3>;
@@ -137,13 +165,18 @@ function GameDetails() {
         onChangeComment={handleCommentChange}
         handleCommentSubmit={handleCommentSubmit}
       />
-      {gameInfo?.comments.length > 0 && (
+
+      {comments.map((eachComment) => (
         <Comment
-          id={gameInfo?._id}
-          commentTitle={commentTitle}
-          comment={comment}
+          userId={user._id}
+          key={eachComment._id}
+          eachComment={eachComment}
+          handleDelete={handleDelete}
+          handleLike={handleLike}
+          handleDislike={handleDislike}
+          getGameComments={getGameComments}
         />
-      )}
+      ))}
     </div>
   );
 }

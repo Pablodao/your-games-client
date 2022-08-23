@@ -1,41 +1,27 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  deleteCommentService,
-  editCommentService,
-  findCommentService,
-} from "../services/comment.services";
+import { useState } from "react";
+import { editCommentService } from "../services/comment.services";
 
 function Comment(props) {
-  const { id } = props;
-  const navigate = useNavigate();
-  const [comments, setComments] = useState([]);
+  const {
+    userId,
+    eachComment,
+    handleDelete,
+    handleLike,
+    handleDislike,
+    getGameComments,
+  } = props;
+
+  // Edit
   const [editedTitle, setEditedTitle] = useState();
   const [editedComment, setEditedComment] = useState();
   const [isEditing, setIsEditing] = useState(false);
-  useEffect(() => {
-    getGameComments();
-  }, []);
-
-  const getGameComments = async () => {
-    try {
-      const response = await findCommentService(id);
-      setComments(response.data);
-    } catch (error) {
-      navigate("/error");
-    }
-  };
-  const handleDelete = (id) => {
-    deleteCommentService(id);
-    getGameComments();
-  };
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleTitleChange = (event) => setEditedTitle(event.target.value);
-  const handlecomentChange = (event) => setEditedComment(event.target.value);
+  const handleCommentChange = (event) => setEditedComment(event.target.value);
 
   const handleSubmitEdited = async (id) => {
     const newComment = {
@@ -50,58 +36,48 @@ function Comment(props) {
       navigator("/error");
     }
   };
-
-  const handleLike = () => {
-
-
-
-  }
-  console.log(  "Comments",comments)
+  console.log(eachComment)
 
   return (
-    <div>
-      {comments.map((eachComment) => {
-        return (
-          <div key={eachComment._id}>
-            {isEditing === false ? (
-              <p>Título:{eachComment.title}</p>
-            ) : (
-              <input
-                type="text"
-                name="title"
-                placeholder={eachComment.title}
-                value={editedTitle}
-                onChange={handleTitleChange}
-              />
-            )}
-            {isEditing === false ? (
-              <p>Contenido:{eachComment.content}</p>
-            ) : (
-              <input
-                name="content"
-                type="text"
-                value={editedComment}
-                onChange={handlecomentChange}
-              />
-            )}
-            {isEditing === true && (
-              <button onClick={() => handleSubmitEdited(eachComment._id)}>
-                Edit comment
-              </button>
-            )}
+    <div key={eachComment._id}>
+      {isEditing === false ? (
+        <p>Título:{eachComment.title}</p>
+      ) : (
+        <input
+          type="text"
+          name="title"
+          placeholder={eachComment.title}
+          value={editedTitle}
+          onChange={handleTitleChange}
+        />
+      )}
+      {isEditing === false ? (
+        <p>Contenido:{eachComment.content}</p>
+      ) : (
+        <input
+          name="content"
+          type="text"
+          value={editedComment}
+          onChange={handleCommentChange}
+        />
+      )}
+      {isEditing === true && (
+        <button className="button" onClick={() => handleSubmitEdited(eachComment._id)}>
+          Edit comment
+        </button>
+      )}
 
-            <p>Creador:{eachComment.creator.username}</p>
-            <p>Fecha de creación:{eachComment.createdAt}</p>
-            {eachComment.isEdited === true && <p>Comentario editado</p>}
-            <button onClick={handleEdit}>Editar comentario</button>
-            <button onClick={() => handleDelete(eachComment._id)}>
-              Borrar comentario
-            </button>
-            <button onClick={handleLike}>Like</button>
-            <button >Dislike</button>
-          </div>
-        );
-      })}
+      <p>Creador:{eachComment.creator.username}</p>
+      <p>Fecha de creación:{eachComment.createdAt}</p>
+      <p>{eachComment.likes.includes(userId) ? "Liked": "Not Liked" }</p>
+      <p>{eachComment.dislikes.includes(userId) ? "Disliked": "Not Disliked" }</p>
+      {eachComment.isEdited === true && <p>Comentario editado</p>}
+      <button className="button" onClick={handleEdit}>Editar comentario</button>
+      <button className="button"onClick={() => handleDelete(eachComment._id)}>
+        Borrar comentario
+      </button>
+      <button  className="button" onClick={()=> handleLike(eachComment._id)}>Like</button>
+      <button className="button" onClick={()=> handleDislike(eachComment._id)}>Dislike</button>
     </div>
   );
 }
