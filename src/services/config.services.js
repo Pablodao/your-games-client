@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const service = axios.create({
-  baseURL: "http://localhost:5005/api",
+  baseURL: `${process.env.REACT_APP_SERVER_URL}`,
 });
 
 // Intercept call and add token to it
@@ -17,4 +17,3 @@ service.interceptors.request.use((config) => {
 });
 
 export default service;
-
