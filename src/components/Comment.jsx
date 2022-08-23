@@ -8,7 +8,7 @@ import {
 
 function Comment(props) {
   const { id } = props;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [comments, setComments] = useState([]);
   const [editedTitle, setEditedTitle] = useState();
   const [editedComment, setEditedComment] = useState();
@@ -22,8 +22,7 @@ function Comment(props) {
       const response = await findCommentService(id);
       setComments(response.data);
     } catch (error) {
-      navigate("/error")
-      
+      navigate("/error");
     }
   };
   const handleDelete = (id) => {
@@ -52,6 +51,12 @@ function Comment(props) {
     }
   };
 
+  const handleLike = () => {
+
+
+
+  }
+  console.log(  "Comments",comments)
 
   return (
     <div>
@@ -87,13 +92,13 @@ function Comment(props) {
 
             <p>Creador:{eachComment.creator.username}</p>
             <p>Fecha de creación:{eachComment.createdAt}</p>
-            <p>Comentario editado</p>
+            {eachComment.isEdited === true && <p>Comentario editado</p>}
             <button onClick={handleEdit}>Editar comentario</button>
             <button onClick={() => handleDelete(eachComment._id)}>
               Borrar comentario
             </button>
-            <p>Boton like</p>
-            <p>Boton dislike</p>
+            <button onClick={handleLike}>Like</button>
+            <button >Dislike</button>
           </div>
         );
       })}
