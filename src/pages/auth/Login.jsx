@@ -86,7 +86,7 @@ function Login() {
         <br />
         {errorMessage && <p>{errorMessage}</p>}
         <br />
-        <button type="submit">Log in</button>
+        <button className="button" type="submit">Log in</button>
       </form>
     </div>
   );

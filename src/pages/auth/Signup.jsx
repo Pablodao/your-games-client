@@ -98,7 +98,7 @@ function Signup() {
         <br />
         {errorMessage && <p>{errorMessage}</p>}
         <br />
-        <button type="submit">Sign up</button>
+        <button  className="button" type="submit">Sign up</button>
       </form>
     </div>
   );

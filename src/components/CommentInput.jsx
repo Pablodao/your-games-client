@@ -30,7 +30,7 @@ function CommentInput(props) {
       />
       {!isCommentValid && <p>The content is required</p>}
 
-        <button type="submit" >Submit</button>
+        <button className="button" type="submit" >Submit</button>
 
     </form>
   );
