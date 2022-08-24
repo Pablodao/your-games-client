@@ -13,8 +13,9 @@ function Comment(props) {
   } = props;
 
   // Edit
-  const [editedTitle, setEditedTitle] = useState();
-  const [editedComment, setEditedComment] = useState();
+  const [editedTitle, setEditedTitle] = useState(eachComment.title);
+  const [editedComment, setEditedComment] = useState(eachComment.content);
+  const [validationErr, setValidationErr] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEdit = () => {
@@ -23,24 +24,30 @@ function Comment(props) {
 
   const handleTitleChange = (event) => {
     event.preventDefault();
+    setValidationErr(false);
     setEditedTitle(event.target.value);
   };
   const handleCommentChange = (event) => {
     event.preventDefault();
+    setValidationErr(false);
     setEditedComment(event.target.value);
   };
 
   const handleSubmitEdited = async (id) => {
-    const newComment = {
-      title: editedTitle,
-      content: editedComment,
-    };
-    try {
-      await editCommentService(newComment, id);
-      setIsEditing(false);
-      getGameComments();
-    } catch (error) {
-      navigator("/error");
+    if (!editedTitle || !editedComment) {
+      setValidationErr(true);
+    } else {
+      const newComment = {
+        title: editedTitle,
+        content: editedComment,
+      };
+      try {
+        await editCommentService(newComment, id);
+        setIsEditing(false);
+        getGameComments();
+      } catch (error) {
+        navigator("/error");
+      }
     }
   };
 
@@ -53,7 +60,6 @@ function Comment(props) {
           <input
             type="text"
             name="title"
-            placeholder={eachComment.title}
             value={editedTitle}
             onChange={handleTitleChange}
           />
@@ -84,18 +90,26 @@ function Comment(props) {
       </div>
 
       {isEditing === true && (
-        <button
-          className="button"
-          onClick={() => handleSubmitEdited(eachComment._id)}
-        >
-          Edit comment
-        </button>
+        <div>
+          {validationErr && <p>Fields can't be empty </p>}
+          <button
+            className="button"
+            onClick={() => handleSubmitEdited(eachComment._id)}
+          >
+            Edit comment
+          </button>
+
+          <button className="button" onClick={() => setIsEditing(false)}>
+            Cancel
+          </button>
+        </div>
       )}
 
       <div>
         <div>
-        
-          <Link to={`/profile/${eachComment.creator._id}`}>Creador:{eachComment.creator.username}</Link>
+          <Link to={`/profile/${eachComment.creator._id}`}>
+            Creador:{eachComment.creator.username}
+          </Link>
           <p>Fecha de creación:{eachComment.createdAt}</p>
         </div>
         <div>
@@ -109,7 +123,7 @@ function Comment(props) {
                 src="/images/thumbs-up-solid-green.svg"
                 alt="like"
               />
-            ) :  (
+            ) : (
               <img
                 className="icon"
                 src="/images/thumbs-up-solid.svg"
@@ -121,16 +135,19 @@ function Comment(props) {
             className="icon-btn"
             onClick={() => handleDislike(eachComment._id)}
           >
-          {  eachComment.dislikes.includes(userId) ?<img
+            {eachComment.dislikes.includes(userId) ? (
+              <img
                 className="icon"
                 src="/images/thumbs-down-solid-red.svg"
                 alt="dislike"
-              />: <img
+              />
+            ) : (
+              <img
                 className="icon"
                 src="/images/thumbs-down-solid.svg"
                 alt="dislike"
-              />}
-           
+              />
+            )}
           </button>
         </div>
       </div>
