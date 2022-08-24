@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 
 function Navbar() {
-  const { isUserActive, authenticateUser } = useContext(AuthContext);
+  const { user,isUserActive, authenticateUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -22,7 +22,7 @@ function Navbar() {
           <Link className="navbar-link" to="/games">
             Games Gallery
           </Link>
-          <Link className="navbar-link" to="/my-profile">
+          <Link className="navbar-link" to={`/profile/${user._id}`}>
             My profile
           </Link>
           <button className="button" onClick={handleLogout}>

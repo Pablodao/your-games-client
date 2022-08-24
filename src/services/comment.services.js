@@ -8,6 +8,10 @@ const findCommentService = (id) => {
   return service.get(`/comments/${id}`);
 };
 
+const findUserCommentsService = (id) => {
+  return service.get(`/comments/user/${id}`);
+};
+
 const deleteCommentService = (id) => {
   return service.delete(`/comments/${id}`);
 };
@@ -29,5 +33,6 @@ export {
   deleteCommentService,
   editCommentService,
   likeCommentService,
-  dislikeCommentService
+  dislikeCommentService,
+  findUserCommentsService
 };

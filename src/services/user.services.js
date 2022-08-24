@@ -1,19 +1,18 @@
 import service from "./config.services";
 
-const findUserService = () => {
-  return service.get(`/profile/my-profile`);
+const findOneUserService = (userId) => {
+  return service.get(`/profile/${userId}`);
 };
 
 const editUserService = (userId) => {
   return service.patch(`/profile/${userId}/edit`);
 };
 
-const findOneUserService = (userId) => {
-  return service.get(`/profile/${userId}`);
-};
-
-const blockUserAccount = (userId) => {
+const blockUserAccount = () => {
   return service.patch(`/close-account`);
+};
+const userFavouriteGames = () => {
+  return service.get("/profile/favourites");
 };
 
 const favouriteGameService = (gameId) => {
@@ -21,9 +20,9 @@ const favouriteGameService = (gameId) => {
 };
 
 export {
-  findUserService,
   editUserService,
   findOneUserService,
   blockUserAccount,
   favouriteGameService,
+  userFavouriteGames,
 };
