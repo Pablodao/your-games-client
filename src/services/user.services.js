@@ -17,7 +17,7 @@ const blockUserAccount = (userId) => {
 };
 
 const favouriteGameService = (gameId) => {
-  return service.patch(`/favourites/${gameId}`);
+  return service.patch(`/profile/favourites/${gameId}`);
 };
 
 export {
