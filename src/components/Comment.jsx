@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { editCommentService } from "../services/comment.services";
 
 function Comment(props) {
@@ -20,8 +21,14 @@ function Comment(props) {
     setIsEditing(true);
   };
 
-  const handleTitleChange = (event) => setEditedTitle(event.target.value);
-  const handleCommentChange = (event) => setEditedComment(event.target.value);
+  const handleTitleChange = (event) => {
+    event.preventDefault();
+    setEditedTitle(event.target.value);
+  };
+  const handleCommentChange = (event) => {
+    event.preventDefault();
+    setEditedComment(event.target.value);
+  };
 
   const handleSubmitEdited = async (id) => {
     const newComment = {
@@ -36,7 +43,6 @@ function Comment(props) {
       navigator("/error");
     }
   };
-  console.log(eachComment);
 
   return (
     <div id="comment-wrapper" key={eachComment._id}>
@@ -88,7 +94,8 @@ function Comment(props) {
 
       <div>
         <div>
-          <p>Creador:{eachComment.creator.username}</p>
+        
+          <Link to={`/profile/${eachComment.creator._id}`}>Creador:{eachComment.creator.username}</Link>
           <p>Fecha de creación:{eachComment.createdAt}</p>
         </div>
         <div>
@@ -96,13 +103,34 @@ function Comment(props) {
             className="icon-btn"
             onClick={() => handleLike(eachComment._id)}
           >
-           <img style={eachComment.likes.includes(userId)?{fill: "green"}:{fill: "lightgray"} } className="icon" src="/images/thumbs-up-solid.svg" alt="like" />
+            {eachComment.likes.includes(userId) ? (
+              <img
+                className="icon"
+                src="/images/thumbs-up-solid-green.svg"
+                alt="like"
+              />
+            ) :  (
+              <img
+                className="icon"
+                src="/images/thumbs-up-solid.svg"
+                alt="like"
+              />
+            )}
           </button>
           <button
             className="icon-btn"
             onClick={() => handleDislike(eachComment._id)}
           >
-           <img style={eachComment.dislikes.includes(userId) ? {fill: "red"}:{fill: "lightgray"} } className="icon" src="/images/thumbs-down-solid.svg" alt="like" />
+          {  eachComment.dislikes.includes(userId) ?<img
+                className="icon"
+                src="/images/thumbs-down-solid-red.svg"
+                alt="dislike"
+              />: <img
+                className="icon"
+                src="/images/thumbs-down-solid.svg"
+                alt="dislike"
+              />}
+           
           </button>
         </div>
       </div>
