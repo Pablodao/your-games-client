@@ -11,20 +11,25 @@ import {
   likeCommentService,
   dislikeCommentService,
 } from "../../services/comment.services";
-import { gameDetailsService } from "../../services/game.services";
+import {
+  newGameValorationService,
+  userGameValorationService,
+  allGameValorationService,
+  editGameValorationService,
+} from "../../services/game.services";
+import { favouriteGameService } from "../../services/user.services";
 
 function GameDetails() {
   const { gameId } = useParams();
   const { user } = useContext(AuthContext);
-  console.log(user);
   useEffect(() => {
     getApiInfo();
-    getGameInfo();
+    getGameValoration();
     getGameComments();
   }, []);
 
   //* Fetch info
-  const [gameInfo, setGameInfo] = useState(null);
+
   const [apiInfo, setApiInfo] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
 
@@ -39,12 +44,60 @@ function GameDetails() {
     }
   };
 
-  const getGameInfo = async () => {
-    try {
-      const response = await gameDetailsService(gameId);
+  //* Game Valoration
 
-      setGameInfo(response.data);
+  const [gameValoration, setGamegameValoration] = useState(0);
+  const [newGameValoration, setNewGameValoration] = useState(0);
+  const [hasValoration, setHasValoration] = useState(false);
+
+  const getGameValoration = async () => {
+    try {
+      const response = await userGameValorationService(gameId);
+      setGamegameValoration(response.data);
+      !response.data ? setHasValoration(false) : setHasValoration(true);
+      console.log(hasValoration);
       setIsFetching(false);
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const handleOnChangeValoration = (event) => {
+    event.preventDefault();
+    setNewGameValoration(event.target.value);
+  };
+
+  const handleValoration = async (gameId, event) => {
+    event.preventDefault();
+    const newValoration = {
+      valoration: newGameValoration,
+      gameId: gameId,
+    };
+    try {
+      await newGameValorationService(gameId, newValoration);
+      setHasValoration(true);
+      console.log(newValoration);
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const handleEditValoration = async (gameId, event) => {
+    event.preventDefault();
+    const editedValoration = {
+      valoration: newGameValoration,
+    };
+    try {
+      await editGameValorationService(gameId, editedValoration);
+      console.log("valoration edited");
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const handleFavourite = async (gameId) => {
+    try {
+      await favouriteGameService(gameId);
     } catch (error) {
       navigate("/error");
     }
@@ -59,11 +112,13 @@ function GameDetails() {
   const [isCommentValid, setIsCommentValid] = useState(true);
 
   const handleCommentTitleChange = (event) => {
+    event.preventDefault();
     setIsCommentTitleValid(true);
     return setCommentTitle(event.target.value);
   };
 
   const handleCommentChange = (event) => {
+    event.preventDefault();
     setIsCommentValid(true);
     return setComment(event.target.value);
   };
@@ -74,14 +129,13 @@ function GameDetails() {
       content: comment,
       game: gameId,
     };
-
     try {
       await newCommentService(newComment, gameId);
       setCommentTitle("");
       setComment("");
       getGameComments();
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -154,6 +208,24 @@ function GameDetails() {
         <img src={apiInfo?.background_image} alt="game" />
         <p>{apiInfo?.description_raw}</p>
         <a href={apiInfo?.website}>Website</a>
+        <button className="button" onClick={() => handleFavourite(gameId)}>
+          Add to Favourite
+        </button>
+
+        <form
+          onSubmit={() => {
+            hasValoration
+              ? handleEditValoration(gameId)
+              : handleValoration(gameId);
+          }}
+        >
+          <input
+            value={newGameValoration}
+            type="number"
+            onChange={handleOnChangeValoration}
+          />
+          <button type="submit">Valoration</button>
+        </form>
       </div>
 
       <CommentInput
