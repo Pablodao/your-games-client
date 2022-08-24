@@ -36,48 +36,76 @@ function Comment(props) {
       navigator("/error");
     }
   };
-  console.log(eachComment)
+  console.log(eachComment);
 
   return (
-    <div key={eachComment._id}>
-      {isEditing === false ? (
-        <p>Título:{eachComment.title}</p>
-      ) : (
-        <input
-          type="text"
-          name="title"
-          placeholder={eachComment.title}
-          value={editedTitle}
-          onChange={handleTitleChange}
-        />
-      )}
-      {isEditing === false ? (
-        <p>Contenido:{eachComment.content}</p>
-      ) : (
-        <input
-          name="content"
-          type="text"
-          value={editedComment}
-          onChange={handleCommentChange}
-        />
-      )}
+    <div id="comment-wrapper" key={eachComment._id}>
+      <div className="title-row">
+        {isEditing === false ? (
+          <p>{eachComment.title}</p>
+        ) : (
+          <input
+            type="text"
+            name="title"
+            placeholder={eachComment.title}
+            value={editedTitle}
+            onChange={handleTitleChange}
+          />
+        )}
+        <button className="icon-btn" onClick={handleEdit}>
+          <img className="icon" src="/images/pencil-solid.svg" alt="edit" />
+        </button>
+        <button
+          className="icon-btn"
+          onClick={() => handleDelete(eachComment._id)}
+        >
+          <img className="icon" src="/images/trash-solid.svg" alt="" />
+        </button>
+      </div>
+      <div>
+        {isEditing === false ? (
+          <p>Contenido:{eachComment.content}</p>
+        ) : (
+          <input
+            name="content"
+            type="text"
+            value={editedComment}
+            onChange={handleCommentChange}
+          />
+        )}
+
+        {eachComment.isEdited === true && <p>Comentario editado</p>}
+      </div>
+
       {isEditing === true && (
-        <button className="button" onClick={() => handleSubmitEdited(eachComment._id)}>
+        <button
+          className="button"
+          onClick={() => handleSubmitEdited(eachComment._id)}
+        >
           Edit comment
         </button>
       )}
 
-      <p>Creador:{eachComment.creator.username}</p>
-      <p>Fecha de creación:{eachComment.createdAt}</p>
-      <p>{eachComment.likes.includes(userId) ? "Liked": "Not Liked" }</p>
-      <p>{eachComment.dislikes.includes(userId) ? "Disliked": "Not Disliked" }</p>
-      {eachComment.isEdited === true && <p>Comentario editado</p>}
-      <button className="button" onClick={handleEdit}>Editar comentario</button>
-      <button className="button"onClick={() => handleDelete(eachComment._id)}>
-        Borrar comentario
-      </button>
-      <button  className="button" onClick={()=> handleLike(eachComment._id)}>Like</button>
-      <button className="button" onClick={()=> handleDislike(eachComment._id)}>Dislike</button>
+      <div>
+        <div>
+          <p>Creador:{eachComment.creator.username}</p>
+          <p>Fecha de creación:{eachComment.createdAt}</p>
+        </div>
+        <div>
+          <button
+            className="icon-btn"
+            onClick={() => handleLike(eachComment._id)}
+          >
+           <img style={eachComment.likes.includes(userId)?{fill: "green"}:{fill: "lightgray"} } className="icon" src="/images/thumbs-up-solid.svg" alt="like" />
+          </button>
+          <button
+            className="icon-btn"
+            onClick={() => handleDislike(eachComment._id)}
+          >
+           <img style={eachComment.dislikes.includes(userId) ? {fill: "red"}:{fill: "lightgray"} } className="icon" src="/images/thumbs-down-solid.svg" alt="like" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
