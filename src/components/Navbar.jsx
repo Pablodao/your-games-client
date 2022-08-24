@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 
 function Navbar() {
-  const { user,isUserActive, authenticateUser } = useContext(AuthContext);
+  const { user, isUserActive, authenticateUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,17 +38,13 @@ function Navbar() {
           <Link className="navbar-link" to="/">
             Home
           </Link>
-          <Link className="navbar-link" to="/games">
-            Games Gallery
+
+          <Link className="navbar-link" to="/signup">
+            Registro
           </Link>
-          <div className="access-btns">
-            <Link className="navbar-link" to="/signup">
-              Registro
-            </Link>
-            <Link className="navbar-link" to="/login">
-              Acceder
-            </Link>
-          </div>
+          <Link className="navbar-link" to="/login">
+            Acceder
+          </Link>
         </div>
       </div>
     );
