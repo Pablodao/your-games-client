@@ -17,15 +17,21 @@ import {
   allGameValorationService,
   editGameValorationService,
 } from "../../services/game.services";
-import { favouriteGameService } from "../../services/user.services";
+import {
+  favouriteGameService,
+  userFavouriteGames,
+} from "../../services/user.services";
+import StarRating from "../../components/StarRating";
 
 function GameDetails() {
   const { gameId } = useParams();
   const { user } = useContext(AuthContext);
   useEffect(() => {
     getApiInfo();
-    getGameValoration();
+    getGameValorations();
+    getUserGameValoration();
     getGameComments();
+    getUserFavourites();
   }, []);
 
   //* Fetch info
@@ -45,51 +51,78 @@ function GameDetails() {
   };
 
   //* Game Valoration
-
-  const [gameValoration, setGamegameValoration] = useState(0);
+  const [gameValorations, setGameValorations] = useState(0);
+  const [userGameValoration, setUserGameValoration] = useState(0);
   const [newGameValoration, setNewGameValoration] = useState(0);
   const [hasValoration, setHasValoration] = useState(false);
 
-  const getGameValoration = async () => {
+  console.log(gameValorations);
+  const getGameValorations = async () => {
+    try {
+      const response = await allGameValorationService(gameId);
+      console.log(response.data);
+      let sum = 0;
+      response.data.forEach((eachValoration) => {
+        sum = sum + eachValoration.valoration;
+        console.log("sum", sum);
+      });
+
+      const mean = sum > 0 ? sum / response.data.length : 0;
+
+      setGameValorations(mean.toFixed(1));
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const getUserGameValoration = async () => {
     try {
       const response = await userGameValorationService(gameId);
-      setGamegameValoration(response.data);
+      setUserGameValoration(response.data.valoration);
       !response.data ? setHasValoration(false) : setHasValoration(true);
-      console.log(hasValoration);
       setIsFetching(false);
     } catch (error) {
       navigate("/error");
     }
   };
 
-  const handleOnChangeValoration = (event) => {
-    event.preventDefault();
-    setNewGameValoration(event.target.value);
-  };
+  
 
-  const handleValoration = async (gameId, event) => {
-    event.preventDefault();
+  const handleValoration = async (valoration) => {
     const newValoration = {
-      valoration: newGameValoration,
+      valoration: valoration,
       gameId: gameId,
     };
     try {
       await newGameValorationService(gameId, newValoration);
       setHasValoration(true);
-      console.log(newValoration);
+      setUserGameValoration(valoration);
+      getGameValorations();
     } catch (error) {
       navigate("/error");
     }
   };
 
-  const handleEditValoration = async (gameId, event) => {
-    event.preventDefault();
+  const handleEditValoration = async (valoration) => {
     const editedValoration = {
-      valoration: newGameValoration,
+      valoration: valoration,
     };
     try {
       await editGameValorationService(gameId, editedValoration);
-      console.log("valoration edited");
+      setUserGameValoration(valoration);
+      getGameValorations();
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  //* Favourites
+  const [userFavourites, setUserFavourites] = useState([]);
+  const getUserFavourites = async () => {
+    try {
+      const response = await userFavouriteGames();
+      console.log(response.data);
+      setUserFavourites(response.data.favourites);
     } catch (error) {
       navigate("/error");
     }
@@ -98,6 +131,7 @@ function GameDetails() {
   const handleFavourite = async (gameId) => {
     try {
       await favouriteGameService(gameId);
+      getUserFavourites();
     } catch (error) {
       navigate("/error");
     }
@@ -208,24 +242,27 @@ function GameDetails() {
         <img src={apiInfo?.background_image} alt="game" />
         <p>{apiInfo?.description_raw}</p>
         <a href={apiInfo?.website}>Website</a>
-        <button className="button" onClick={() => handleFavourite(gameId)}>
-          Add to Favourite
+        <button className="icon-btn" onClick={() => handleFavourite(gameId)}>
+          {userFavourites.includes(gameId) ? (
+            <img
+              className="icon"
+              src="/images/heart-regular.svg"
+              alt="empty heart"
+            />
+          ) : (
+            <img
+              className="icon"
+              src="/images/heart-solid.svg"
+              alt="empty heart"
+            />
+          )}
         </button>
+        <p>Valoracion: {gameValorations} </p>
 
-        <form
-          onSubmit={() => {
-            hasValoration
-              ? handleEditValoration(gameId)
-              : handleValoration(gameId);
-          }}
-        >
-          <input
-            value={newGameValoration}
-            type="number"
-            onChange={handleOnChangeValoration}
-          />
-          <button type="submit">Valoration</button>
-        </form>
+        <StarRating
+          handleSelect={hasValoration ? handleEditValoration : handleValoration}
+          userGameValoration={userGameValoration}
+        />
       </div>
 
       <CommentInput
