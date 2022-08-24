@@ -1,3 +1,6 @@
+p {
+  margin: 0;
+}
 .wrapper {
   max-width: 1200px;
   margin: 96px auto;
@@ -21,7 +24,7 @@
 }
 
 .grid-element:hover {
-  color: brown;
+  color: #1663be;
   transition: color 0.2s;
 }
 
@@ -39,4 +42,95 @@
   font-size: 16px;
   padding: 12px 8px;
   width: 120px;
+}
+
+.button:hover {
+  background-color: #1663be;
+  transition: background-color 0.2s;
+}
+
+.input {
+  padding: 6px 8px;
+  width: 100%;
+}
+.textarea {
+  height: 100px;
+  width: 100%;
+  padding: 6px 8px;
+  resize: none;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-btn {
+  background: none;
+  padding: 0;
+  border: none;
+}
+
+/* Navbar */
+
+.navbar {
+  padding: 18px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.navbar-wrapper {
+  background-color: #cccccc;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.navbar-link:hover {
+  color: #1663be;
+  transition: color 0.2s;
+}
+
+/* Comments */
+
+#comment-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 648px;
+  margin: 0 auto;
+  padding: 32px;
+  background-color: #cccccc;
+  border-radius: 8px;
+}
+.title-row {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.title-row p {
+  margin-right: auto;
+ 
+}
+.title-row button:last-child {
+  margin-left: 16px;
+}
+
+.comment-form {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 48px auto;
+}
+
+.comment-form textarea {
+  margin: 16px 0;
 }
