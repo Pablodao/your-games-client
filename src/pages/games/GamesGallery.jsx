@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { gameListService } from "../../services/api.services";
 
 function GamesGallery() {
   const [games, setGames] = useState([]);
@@ -11,10 +11,8 @@ function GamesGallery() {
 
   const getGames = async () => {
     try {
-      const response = await axios(
-        `https://api.rawg.io/api/games?key=848748eade3647ecbf3ac299d1c7b50c&page_size=9&page=${page}`
-      );
-
+      const response = await gameListService(page);
+      
       setGames(response.data.results);
       setHasNext(response.data.next);
       setHasPrevious(response.data.previous);

@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import CommentInput from "../../components/CommentInput";
 import Comment from "../../components/Comment";
 import { AuthContext } from "../../context/auth.context";
@@ -22,6 +21,7 @@ import {
   userFavouriteGames,
 } from "../../services/user.services";
 import StarRating from "../../components/StarRating";
+import { gameDetailsService } from "../../services/api.services";
 
 function GameDetails() {
   const { gameId } = useParams();
@@ -41,9 +41,8 @@ function GameDetails() {
 
   const getApiInfo = async () => {
     try {
-      const response = await axios(
-        `https://api.rawg.io/api/games/${gameId}?key=848748eade3647ecbf3ac299d1c7b50c`
-      );
+      const response = await gameDetailsService(gameId) ;
+      console.log("RESPONSE",response)
       setApiInfo(response.data);
     } catch (error) {
       navigate("/error");
