@@ -15,6 +15,7 @@ import {
 import Comment from "../../components/Comment";
 import { uploadService } from "../../services/upload.services";
 import EditProfileForm from "../../components/EditProfileForm";
+import { format, parseISO } from "date-fns";
 
 function MyProfile() {
   const navigate = useNavigate();
@@ -27,15 +28,19 @@ function MyProfile() {
   const [accountDate, setAccountDate] = useState("");
   const [favourites, setFavourites] = useState([]);
   const [comments, setComments] = useState([]);
-
+  console.log("USERINFO", avatar);
   useEffect(() => {
     getUserInfo();
     getUserComments();
   }, [userId]);
 
+  const date = parseISO(accountDate)
+
   const getUserInfo = async () => {
     try {
       const response = await findOneUserService(userId);
+
+      console.log(response);
 
       const {
         avatar,
@@ -100,6 +105,8 @@ function MyProfile() {
   const [isDescriptiontValid, setIsDescriptionValid] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
+  console.log(imgUrl);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -130,8 +137,8 @@ function MyProfile() {
     };
     try {
       await editUserService(userId, editedUser);
-      getUserInfo()
-      setIsEditing(false)
+      getUserInfo();
+      setIsEditing(false);
     } catch (error) {
       navigate("error");
     }
@@ -151,7 +158,6 @@ function MyProfile() {
       <p>Email: {email}</p>
 
       <div>
-        <p>Imagen: {avatar}</p>
         {isEditing ? (
           <EditProfileForm
             handleAvatarChange={handleAvatarChange}
@@ -171,7 +177,7 @@ function MyProfile() {
         <button onClick={handleEdit}>Edit profile</button>
       </div>
 
-      <p>F.creacion de la cuenta: {accountDate}</p>
+      <p>F.creacion de la cuenta: { `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`} </p>
 
       <p>rango: {rank}</p>
 
