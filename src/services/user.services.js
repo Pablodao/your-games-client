@@ -15,8 +15,8 @@ const userFavouriteGames = () => {
   return service.get("/profile/favourites");
 };
 
-const favouriteGameService = (gameId) => {
-  return service.patch(`/profile/favourites/${gameId}`);
+const favouriteGameService = (gameId, editedFavourite) => {
+  return service.patch(`/profile/favourites/${gameId}`, editedFavourite);
 };
 
 export {
