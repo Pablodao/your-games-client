@@ -40,12 +40,14 @@ function GameDetails() {
   const [isFetching, setIsFetching] = useState(true);
 
   const getApiInfo = async () => {
-    try {
-      const response = await gameDetailsService(gameId) ;
-      console.log("RESPONSE",response)
-      setApiInfo(response.data);
-    } catch (error) {
-      navigate("/error");
+    if (!apiInfo) {
+      try {
+        const response = await gameDetailsService(gameId);
+        console.log("RESPONSE", response);
+        setApiInfo(response.data);
+      } catch (error) {
+        // navigate("/error");
+      }
     }
   };
 
@@ -70,22 +72,21 @@ function GameDetails() {
 
       setGameValorations(mean.toFixed(1));
     } catch (error) {
-      navigate("/error");
+      //navigate("/error");
     }
   };
 
   const getUserGameValoration = async () => {
     try {
       const response = await userGameValorationService(gameId);
-      setUserGameValoration(response.data.valoration);
+      setUserGameValoration(response.data?.valoration);
       !response.data ? setHasValoration(false) : setHasValoration(true);
       setIsFetching(false);
     } catch (error) {
-      navigate("/error");
+      console.log(error)
+      // navigate("/error");
     }
   };
-
-  
 
   const handleValoration = async (valoration) => {
     const newValoration = {
@@ -98,7 +99,7 @@ function GameDetails() {
       setUserGameValoration(valoration);
       getGameValorations();
     } catch (error) {
-      navigate("/error");
+      //navigate("/error");
     }
   };
 
@@ -111,28 +112,34 @@ function GameDetails() {
       setUserGameValoration(valoration);
       getGameValorations();
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
   //* Favourites
   const [userFavourites, setUserFavourites] = useState([]);
+
   const getUserFavourites = async () => {
     try {
       const response = await userFavouriteGames();
-      console.log(response.data);
+      console.log("Response.data", response.data);
       setUserFavourites(response.data.favourites);
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
   const handleFavourite = async (gameId) => {
+    const gameInfo = {
+      gameName: apiInfo?.name,
+      gameImg: apiInfo?.background_image,
+    };
+    console.log("gameInfo", gameInfo);
     try {
-      await favouriteGameService(gameId);
+      await favouriteGameService(gameId, gameInfo);
       getUserFavourites();
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
@@ -168,7 +175,7 @@ function GameDetails() {
       setComment("");
       getGameComments();
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
@@ -196,7 +203,7 @@ function GameDetails() {
 
       setComments(response.data);
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
@@ -207,7 +214,7 @@ function GameDetails() {
       await likeCommentService(id);
       getGameComments();
     } catch (error) {
-      navigate("/error");
+      // navigate("/error");
     }
   };
 
@@ -216,7 +223,7 @@ function GameDetails() {
       await dislikeCommentService(id);
       getGameComments();
     } catch (error) {
-      navigate("/error");
+      //navigate("/error");
     }
   };
 
@@ -242,7 +249,9 @@ function GameDetails() {
         <p>{apiInfo?.description_raw}</p>
         <a href={apiInfo?.website}>Website</a>
         <button className="icon-btn" onClick={() => handleFavourite(gameId)}>
-          {userFavourites.includes(gameId) ? (
+          {userFavourites.filter(
+            (eachFavourite) => eachFavourite.gameId === gameId
+          ).length === 0 ? (
             <img
               className="icon"
               src="/images/heart-regular.svg"
