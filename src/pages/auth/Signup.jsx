@@ -36,16 +36,17 @@ function Signup() {
 
     try {
       await signupService(newUser);
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
-      navigate("/signup")
+      navigate("/signup");
       setErrorMessage(error.response.data.errorMessage);
     }
   };
 
-  const handleSubmit =  (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    const emailRegex = /^([A-Z|a-z|0-9](\.|_){0,1})+[A-Z|a-z|0-9]\@([A-Z|a-z|0-9])+((\.){0,1}[A-Z|a-z|0-9]){2}\.[a-z]{2,3}$/;
+    const emailRegex =
+      /^([A-Z|a-z|0-9](\.|_){0,1})+[A-Z|a-z|0-9]\@([A-Z|a-z|0-9])+((\.){0,1}[A-Z|a-z|0-9]){2}\.[a-z]{2,3}$/;
     const passwordRegex = /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{8,64})/;
 
     if (!username) {
@@ -57,49 +58,58 @@ function Signup() {
     if (!password || !passwordRegex.test(password)) {
       setIsPasswordValid(false);
     }
-    if (username && email && emailRegex.test(email) && password && passwordRegex.test(password)) {
+    if (
+      username &&
+      email &&
+      emailRegex.test(email) &&
+      password &&
+      passwordRegex.test(password)
+    ) {
       handleSignup();
     }
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
+    <div className="wrapper">
+      <div className="flex">
 
-      <form onSubmit={handleSubmit}>
-        <label>Name:</label>
-        <input
-          type="text"
-          name="username"
-          value={username}
-          onChange={handleUsernameChange}
-        />
-        {!isUsernameValid && <p>Invalid username</p>}
+        <h1 className="title">Sign Up</h1>
 
-        <br />
+        <form className="form" onSubmit={handleSubmit}>
+          <label>Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={handleUsernameChange}
+          />
+          {!isUsernameValid && <p>Invalid username</p>}
 
-        <label>Email:</label>
-        <input
-          type="text"
-          name="email"
-          value={email}
-          onChange={handleEmailChange}
-        />
-        {!isEmailValid && <p>Invalid email</p>}
-        <br />
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        {!isPasswordValid && <p>Invalid password</p>}
-        <br />
-        {errorMessage && <p>{errorMessage}</p>}
-        <br />
-        <button  className="button" type="submit">Sign up</button>
-      </form>
+          <label>Email:</label>
+          <input
+            type="text"
+            name="email"
+            value={email}
+            onChange={handleEmailChange}
+          />
+          {!isEmailValid && <p>Invalid email</p>}
+
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          {!isPasswordValid && <p>Invalid password</p>}
+
+          {errorMessage && <p>{errorMessage}</p>}
+
+          <button className="button" style={{margin: "0 auto"}} type="submit">
+            Sign up
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   findOneUserService,
 } from "../../services/user.services";
 import { AuthContext } from "../../context/auth.context";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   findUserCommentsService,
   deleteCommentService,
@@ -19,6 +19,7 @@ import { format, parseISO } from "date-fns";
 
 function MyProfile() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const { userId } = useParams();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -27,6 +28,7 @@ function MyProfile() {
   const [rank, setRank] = useState("");
   const [accountDate, setAccountDate] = useState("");
   const [favourites, setFavourites] = useState([]);
+  const [showFavourites, setShowFavourites] = useState(false);
   const [comments, setComments] = useState([]);
   console.log("USERINFO", avatar);
   useEffect(() => {
@@ -34,7 +36,7 @@ function MyProfile() {
     getUserComments();
   }, [userId]);
 
-  const date = parseISO(accountDate)
+  const date = parseISO(accountDate);
 
   const getUserInfo = async () => {
     try {
@@ -152,46 +154,113 @@ function MyProfile() {
       handleEditProfile();
     }
   };
+  console.log("COMENNTS", comments);
   return (
-    <div>
-      <p>Nombre del usuario: {username} </p>
-      <p>Email: {email}</p>
-
-      <div>
-        {isEditing ? (
-          <EditProfileForm
-            handleAvatarChange={handleAvatarChange}
-            imgUrl={imgUrl}
-            handleEditProfile={handleEditProfile}
-            description={description}
-            onChangeDescription={handleDescriptionChange}
-            isDescriptiontValid={isDescriptiontValid}
-            handleDescriptionSubmit={handleDescriptionSubmit}
-          />
-        ) : (
+    <div className="wrapper">
+      <div className="flex">
+        <div className="row" style={{ width: "100%" }}>
+          {avatar && !isEditing && (
+            <img className="profile-avatar" src={avatar} alt="user avatar" />
+          )}
           <div>
-            <img src={avatar} alt="" />
-            <p>Descripcion: {description}</p>
+            {isEditing ? (
+              <h1 className="title" style={{ marginBottom: "48px" }}>
+                Edit profile
+              </h1>
+            ) : (
+              <h1 className="title" style={{ marginBottom: "16px" }}>
+                {username}
+              </h1>
+            )}
+            {user._id === userId && !isEditing && (
+              <p style={{ marginBottom: "16px" }}>{email}</p>
+            )}
+          </div>
+          {user._id === userId && !isEditing && (
+            <button
+              style={{ marginLeft: "auto" }}
+              className="button"
+              onClick={handleEdit}
+            >
+              Edit profile
+            </button>
+          )}
+        </div>
+        <div style={{ marginRight: "auto", marginBottom: "64px" }}>
+          <div>
+            {isEditing ? (
+              <EditProfileForm
+                handleAvatarChange={handleAvatarChange}
+                imgUrl={imgUrl}
+                handleEditProfile={handleEditProfile}
+                description={description}
+                onChangeDescription={handleDescriptionChange}
+                isDescriptiontValid={isDescriptiontValid}
+                handleDescriptionSubmit={handleDescriptionSubmit}
+              />
+            ) : (
+              description && (
+                <p style={{ marginBottom: "16px" }}>{description}</p>
+              )
+            )}
+          </div>
+
+          {!isEditing && (
+            <p style={{ marginBottom: "16px" }}>
+              Member since{" "}
+              {`${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`}
+            </p>
+          )}
+
+          {!isEditing && <p>Rank: {rank}</p>}
+        </div>
+        {favourites.length > 0 && (
+          <div>
+            <button
+            style={{width: "fit-content", maxWidth: "none", marginBottom:"32px"}}
+              className="button"
+              onClick={() =>
+                setShowFavourites((previousValue) => !previousValue)
+              }
+            >
+              Show {showFavourites ? "comments" : "favourites"}
+            </button>
           </div>
         )}
-        <button onClick={handleEdit}>Edit profile</button>
+
+        {!isEditing && (
+          <div>
+            {showFavourites ? (
+              <div>
+                {favourites.map((eachFavourite) => (
+                  <div>
+                    <Link className="link" style={{display:"flex", alignItems:"center", marginBottom:"16px"}} to={`/games/${eachFavourite.gameId}`}>
+                    <img className="comment-avatar" src={eachFavourite.gameImg} alt="game img" />
+                      <p>{eachFavourite.gameName}</p>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div>
+                {comments.map((eachComment) => (
+                  <Comment
+                    setIsEditing={setIsEditing}
+                    userId={user._id}
+                    key={eachComment._id}
+                    eachComment={eachComment}
+                    handleDelete={handleDelete}
+                    handleLike={handleLike}
+                    handleDislike={handleDislike}
+                    getGameComments={getUserComments}
+                    showGame
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      <p>F.creacion de la cuenta: { `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`} </p>
-
-      <p>rango: {rank}</p>
-
-      {comments.map((eachComment) => (
-        <Comment
-          userId={userId}
-          key={eachComment._id}
-          eachComment={eachComment}
-          handleDelete={handleDelete}
-          handleLike={handleLike}
-          handleDislike={handleDislike}
-          getGameComments={getUserComments}
-        />
-      ))}
     </div>
   );
 }

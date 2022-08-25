@@ -1,5 +1,6 @@
 function EditProfileForm(props) {
   const {
+    setIsEditing,
     handleAvatarChange,
     imgUrl,
     handleDescriptionSubmit,
@@ -9,8 +10,13 @@ function EditProfileForm(props) {
   } = props;
   return (
     <div>
-      <img src={imgUrl} alt="new Avatar" />
-      <input type="file" onChange={handleAvatarChange} />
+      <div className="row" style={{ flexDirection: "column" }}>
+        {imgUrl && (
+          <img className="avatar-preview" src={imgUrl} alt="new Avatar" />
+        )}
+        <input type="file" onChange={handleAvatarChange} />
+      </div>
+
       <form className="comment-form" onSubmit={handleDescriptionSubmit}>
         <textarea
           className="textarea"
@@ -20,10 +26,18 @@ function EditProfileForm(props) {
           onChange={onChangeDescription}
         />
         {!isDescriptiontValid && <p>The content is required</p>}
-
-        <button className="button" type="submit">
-          Submit
-        </button>
+        <div className="row">
+          <button className="button" type="submit">
+            Submit
+          </button>
+          <button
+            style={{ marginLeft: "16px" }}
+            className="button"
+            onClick={() => setIsEditing(false)}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );

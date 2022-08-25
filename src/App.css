@@ -1,9 +1,47 @@
+h1 {
+  margin: 0;
+}
+
 p {
   margin: 0;
 }
 .wrapper {
   max-width: 1200px;
-  margin: 96px auto;
+  margin: 48px auto;
+  padding: 24px;
+  overflow: hidden;
+}
+.title {
+  margin-bottom: 32px;
+  max-width: 600px;
+  font-size: 48px;
+  line-height: 1;
+}
+.subtitle {
+  margin-bottom: 32px;
+  color: lightslategray;
+  text-align: center;
+  max-width: 340px;
+}
+.paragraph {
+  margin-bottom: 32px;
+  max-width: 600px;
+
+  text-align: center;
+}
+.image {
+  margin-bottom: 32px;
+  max-width: 600px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.flex {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.row {
+  display: flex;
 }
 
 .grid {
@@ -34,6 +72,20 @@ p {
   margin-top: 24px;
 }
 
+.link {
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.link:hover {
+  color: #1663be;
+  transition: color 0.2s;
+}
+
 .button {
   border: none;
   background-color: black;
@@ -42,6 +94,10 @@ p {
   font-size: 16px;
   padding: 12px 8px;
   width: 120px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  height: fit-content;
 }
 
 .button:hover {
@@ -52,12 +108,14 @@ p {
 .input {
   padding: 6px 8px;
   width: 100%;
+  box-sizing: border-box;
 }
 .textarea {
   height: 100px;
   width: 100%;
   padding: 6px 8px;
   resize: none;
+  box-sizing: border-box;
 }
 
 .icon {
@@ -69,6 +127,18 @@ p {
   background: none;
   padding: 0;
   border: none;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-bottom: 8px;
+}
+.form input {
+  margin-bottom: 32px;
 }
 
 /* Navbar */
@@ -105,7 +175,8 @@ p {
   display: flex;
   flex-direction: column;
   max-width: 648px;
-  margin: 0 auto;
+  min-width: 648px;
+  margin-bottom: 32px;
   padding: 32px;
   background-color: #cccccc;
   border-radius: 8px;
@@ -117,7 +188,6 @@ p {
 
 .title-row p {
   margin-right: auto;
- 
 }
 .title-row button:last-child {
   margin-left: 16px;
@@ -125,6 +195,7 @@ p {
 
 .comment-form {
   max-width: 600px;
+  min-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -133,4 +204,36 @@ p {
 
 .comment-form textarea {
   margin: 16px 0;
+}
+
+.comment-avatar {
+  border-radius: 50%;
+  height: 64px;
+  width: 64px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.comment-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-preview {
+  border-radius: 6px;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+.profile-avatar {
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-bottom: 16px;
+  margin-right: 32px;
 }

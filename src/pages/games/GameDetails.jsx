@@ -83,7 +83,7 @@ function GameDetails() {
       !response.data ? setHasValoration(false) : setHasValoration(true);
       setIsFetching(false);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       // navigate("/error");
     }
   };
@@ -102,6 +102,7 @@ function GameDetails() {
       //navigate("/error");
     }
   };
+  console.log();
 
   const handleEditValoration = async (valoration) => {
     const editedValoration = {
@@ -128,7 +129,7 @@ function GameDetails() {
       // navigate("/error");
     }
   };
-
+  console.log("User Favourites", userFavourites);
   const handleFavourite = async (gameId) => {
     const gameInfo = {
       gameName: apiInfo?.name,
@@ -241,59 +242,85 @@ function GameDetails() {
   }
 
   return (
-    <div>
-      <h1>Detalles del Juego</h1>
-      <div>
-        <h2>{apiInfo?.name}</h2>
-        <img src={apiInfo?.background_image} alt="game" />
-        <p>{apiInfo?.description_raw}</p>
-        <a href={apiInfo?.website}>Website</a>
-        <button className="icon-btn" onClick={() => handleFavourite(gameId)}>
-          {userFavourites.filter(
-            (eachFavourite) => eachFavourite.gameId === gameId
-          ).length === 0 ? (
-            <img
-              className="icon"
-              src="/images/heart-regular.svg"
-              alt="empty heart"
-            />
-          ) : (
-            <img
-              className="icon"
-              src="/images/heart-solid.svg"
-              alt="empty heart"
-            />
-          )}
-        </button>
-        <p>Valoracion: {gameValorations} </p>
+    <div className="wrapper">
+      <div className="flex">
+        <h1 style={{ marginBottom: "32px" }} className="title">
+          {apiInfo?.name}
+        </h1>
 
-        <StarRating
-          handleSelect={hasValoration ? handleEditValoration : handleValoration}
-          userGameValoration={userGameValoration}
+        <img className="image" src={apiInfo?.background_image} alt="game" />
+        <div className="row" style={{marginBottom:"32px"}}>
+          <StarRating
+            handleSelect={
+              hasValoration ? handleEditValoration : handleValoration
+            }
+            userGameValoration={userGameValoration}
+          />
+          <button
+            style={{ marginLeft: "16px" }}
+            className="icon-btn"
+            onClick={() => handleFavourite(gameId)}
+          >
+            {userFavourites.filter(
+              (eachFavourite) => eachFavourite.gameId === gameId
+            ).length === 0 ? (
+              <img
+                className="icon"
+                src="/images/heart-regular.svg"
+                alt="empty heart"
+              />
+            ) : (
+              <img
+                className="icon"
+                src="/images/heart-solid.svg"
+                alt="empty heart"
+              />
+            )}
+          </button>
+
+          <p className="row" style={{ marginLeft: "16px"}}>
+            <img
+              className="icon"
+              src="/images/star-solid.svg"
+              alt="Valoration: "
+            />
+            {gameValorations}
+          </p>
+          <a
+            className="link"
+            style={{ marginLeft: "16px" }}
+            href={apiInfo?.website}
+          >
+            Website
+          </a>
+        </div>
+        
+        <p style={{maxWidth:"600px", textAlign:"justify" }}>{apiInfo?.description_raw}</p>
+
+        
+
+        <CommentInput
+          commentTitle={commentTitle}
+          isCommentTitleValid={isCommentTitleValid}
+          onChangeTitle={handleCommentTitleChange}
+          comment={comment}
+          isCommentValid={isCommentValid}
+          onChangeComment={handleCommentChange}
+          handleCommentSubmit={handleCommentSubmit}
         />
+
+        {comments.map((eachComment) => (
+          <Comment
+            userId={user._id}
+            key={eachComment._id}
+            eachComment={eachComment}
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+            handleDislike={handleDislike}
+            getGameComments={getGameComments}
+          />
+        ))}
       </div>
-
-      <CommentInput
-        commentTitle={commentTitle}
-        isCommentTitleValid={isCommentTitleValid}
-        onChangeTitle={handleCommentTitleChange}
-        comment={comment}
-        isCommentValid={isCommentValid}
-        onChangeComment={handleCommentChange}
-        handleCommentSubmit={handleCommentSubmit}
-      />
-
-      {comments.map((eachComment) => (
-        <Comment
-          userId={user._id}
-          key={eachComment._id}
-          eachComment={eachComment}
-          handleDelete={handleDelete}
-          handleLike={handleLike}
-          handleDislike={handleDislike}
-          getGameComments={getGameComments}
-        />
-      ))}
     </div>
   );
 }
