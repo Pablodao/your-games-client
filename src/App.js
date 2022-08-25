@@ -9,22 +9,42 @@ import Login from "./pages/auth/Login";
 import GamesGallery from "./pages/games/GamesGallery";
 import GameDetails from "./pages/games/GameDetails";
 import MyProfile from "./pages/user/MyProfile";
+import IsPrivate from "./components/IsPrivate";
 function App() {
   return (
     <div className="App">
       <Navbar />
 
       <Routes>
-
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
 
-        <Route path="/games" element={<GamesGallery />} />
-        <Route path="/games/:gameId" element={<GameDetails />} />
+        <Route
+          path="/games"
+          element={
+            <IsPrivate>
+              <GamesGallery />
+            </IsPrivate>
+          }
+        />
+        <Route
+          path="/games/:gameId"
+          element={
+            <IsPrivate>
+              <GameDetails />
+            </IsPrivate>
+          }
+        />
 
-        <Route path="/my-profile" element={<MyProfile/>} />
-
+        <Route
+          path="/profile/:userId"
+          element={
+            <IsPrivate>
+              <MyProfile />
+            </IsPrivate>
+          }
+        />
       </Routes>
     </div>
   );

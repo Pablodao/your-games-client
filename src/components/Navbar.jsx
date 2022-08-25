@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 
 function Navbar() {
-  const { isUserActive, authenticateUser } = useContext(AuthContext);
+  const { user, isUserActive, authenticateUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -14,20 +14,38 @@ function Navbar() {
 
   if (isUserActive === true) {
     return (
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/games">Games Gallery</Link>
-        <Link to="/my-profile">My profile</Link>
-        <button onClick={handleLogout}>Log out</button>
+      <div className="navbar-wrapper">
+        <div className="navbar">
+          {/* <Link className="navbar-link" to="/">
+            Home
+          </Link> */}
+          <Link className="navbar-link" to="/games">
+            Games Gallery
+          </Link>
+          <Link className="navbar-link" to={`/profile/${user._id}`}>
+            My profile
+          </Link>
+          <button className="button" onClick={handleLogout}>
+            Log out
+          </button>
+        </div>
       </div>
     );
   } else {
     return (
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/games">Games Gallery</Link>
-        <Link to="/signup">Registro</Link>
-        <Link to="/login">Acceder</Link>
+      <div className="navbar-wrapper">
+        <div className="navbar">
+          <Link className="navbar-link" to="/">
+            Home
+          </Link>
+
+          <Link className="navbar-link" to="/signup">
+            Registro
+          </Link>
+          <Link className="navbar-link" to="/login">
+            Acceder
+          </Link>
+        </div>
       </div>
     );
   }

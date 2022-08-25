@@ -1,11 +1,26 @@
 import service from "./config.services";
 
-const newGameService = (id) => {
-  return service.post(`/games/${id}`);
+const newGameValorationService = (gameId, newValoration) => {
+  console.log(newValoration)
+  return service.post(`/games/${gameId}`, newValoration);
+  
 };
 
-const gameDetailsService = (id) => {
-  return service.get(`/games/${id}`);
+const userGameValorationService = (gameId) => {
+  return service.get(`/games/${gameId}`);
 };
 
-export { newGameService, gameDetailsService };
+const allGameValorationService = (gameId) => {
+  return service.get(`/games/${gameId}/valorations`);
+};
+
+const editGameValorationService = (gameId, editedValoration) => {
+  return service.patch(`/games/${gameId}`,editedValoration);
+};
+
+export {
+  newGameValorationService,
+  userGameValorationService,
+  allGameValorationService,
+  editGameValorationService,
+};

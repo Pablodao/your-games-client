@@ -27,20 +27,19 @@ function Login() {
       access: user,
       password: password,
     };
-   
+
     try {
       const response = await loginService(loginUser);
-     
 
       const authToken = response.data.authToken;
       localStorage.setItem("authToken", authToken);
 
-      authenticateUser();
+      await authenticateUser();
 
       //Todo Reenviar al usuario
-     navigate("/");
+      navigate("/games");
     } catch (error) {
-      navigate("/login")
+      navigate("/login");
       setErrorMessage(error.response.data.errorMessage);
     }
   };
@@ -60,34 +59,38 @@ function Login() {
   };
 
   return (
-    <div>
-      <h1>Log In</h1>
+    <div className="wrapper">
+      <div className="flex">
+        <h1 className="title">Log In</h1>
 
-      <form onSubmit={handleSubmit}>
-        <label>Username or email:</label>
-        <input
-          type="text"
-          name="user"
-          value={user}
-          onChange={handleUserChange}
-        />
-        {!isUserValid && <p>This field is required</p>}
+        <form className="form" onSubmit={handleSubmit}>
+          <label>Username or email:</label>
+          <input
+            type="text"
+            name="user"
+            value={user}
+            onChange={handleUserChange}
+          />
+          {!isUserValid && <p>This field is required</p>}
 
-        <br />
+   
 
-        <label>Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handlePasswordChange}
-        />
-        {!isPasswordValid && <p>Invalid password</p>}
-        <br />
-        {errorMessage && <p>{errorMessage}</p>}
-        <br />
-        <button type="submit">Log in</button>
-      </form>
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handlePasswordChange}
+          />
+          {!isPasswordValid && <p>Invalid password</p>}
+
+          {errorMessage && <p>{errorMessage}</p>}
+   
+          <button style={{margin: "0 auto"}} className="button" type="submit">
+            Log in
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

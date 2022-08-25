@@ -6,13 +6,13 @@ function CommentInput(props) {
     comment,
     onChangeComment,
     isCommentValid,
-    handleCommentSubmit
+    handleCommentSubmit,
   } = props;
 
   return (
-    <form onSubmit={handleCommentSubmit}>
-      <label htmlFor="title">Title</label>
+    <form className="comment-form" onSubmit={handleCommentSubmit}>
       <input
+        className="input"
         type="text"
         name="title"
         value={commentTitle}
@@ -22,6 +22,8 @@ function CommentInput(props) {
       {!isCommentTitleValid && <p>The title is required</p>}
 
       <textarea
+        
+        className="textarea"
         type="text"
         name="content"
         value={comment}
@@ -30,8 +32,9 @@ function CommentInput(props) {
       />
       {!isCommentValid && <p>The content is required</p>}
 
-        <button type="submit" >Submit</button>
-
+      <button className="button" type="submit">
+        Submit
+      </button>
     </form>
   );
 }
