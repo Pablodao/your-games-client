@@ -1,6 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { verifyService } from "../../services/auth.services";
-import { findOneUserService } from "../../services/user.services";
+import {
+  editUserService,
+  findOneUserService,
+} from "../../services/user.services";
 import { AuthContext } from "../../context/auth.context";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -10,6 +13,8 @@ import {
   dislikeCommentService,
 } from "../../services/comment.services";
 import Comment from "../../components/Comment";
+import { uploadService } from "../../services/upload.services";
+import EditProfileForm from "../../components/EditProfileForm";
 
 function MyProfile() {
   const navigate = useNavigate();
@@ -62,6 +67,7 @@ function MyProfile() {
       navigate("/error");
     }
   };
+  //Edit Profile
 
   // Like & Dislike
 
@@ -89,15 +95,84 @@ function MyProfile() {
     getUserComments();
   };
 
+  // Edit profile
+  const [imgUrl, setImgUrl] = useState("");
+  const [isDescriptiontValid, setIsDescriptionValid] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  // Avatar change
+
+  const handleAvatarChange = async (event) => {
+    const form = new FormData();
+    form.append("image", event.target.files[0]);
+    try {
+      const response = await uploadService(form);
+      console.log(response.data);
+      setImgUrl(response.data.imageUrl);
+    } catch (error) {
+      navigate("/error");
+    }
+  };
+
+  const handleDescriptionChange = (event) => {
+    event.preventDefault();
+    setIsDescriptionValid(true);
+    return setDescription(event.target.value);
+  };
+  const handleEditProfile = async () => {
+    const editedUser = {
+      avatar: imgUrl,
+      description: description,
+    };
+    try {
+      await editUserService(userId, editedUser);
+      getUserInfo()
+      setIsEditing(false)
+    } catch (error) {
+      navigate("error");
+    }
+  };
+  const handleDescriptionSubmit = (event) => {
+    event.preventDefault();
+
+    if (!description) {
+      setIsDescriptionValid(false);
+    } else {
+      handleEditProfile();
+    }
+  };
   return (
     <div>
       <p>Nombre del usuario: {username} </p>
       <p>Email: {email}</p>
-      <p>Imagen: {avatar}</p>
-      <p>Descripcion: {description}</p>
+
+      <div>
+        <p>Imagen: {avatar}</p>
+        {isEditing ? (
+          <EditProfileForm
+            handleAvatarChange={handleAvatarChange}
+            imgUrl={imgUrl}
+            handleEditProfile={handleEditProfile}
+            description={description}
+            onChangeDescription={handleDescriptionChange}
+            isDescriptiontValid={isDescriptiontValid}
+            handleDescriptionSubmit={handleDescriptionSubmit}
+          />
+        ) : (
+          <div>
+            <img src={avatar} alt="" />
+            <p>Descripcion: {description}</p>
+          </div>
+        )}
+        <button onClick={handleEdit}>Edit profile</button>
+      </div>
+
       <p>F.creacion de la cuenta: {accountDate}</p>
 
-      <p>Lista de favoritos: {favourites}</p>
       <p>rango: {rank}</p>
 
       {comments.map((eachComment) => (

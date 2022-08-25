@@ -4,8 +4,8 @@ const findOneUserService = (userId) => {
   return service.get(`/profile/${userId}`);
 };
 
-const editUserService = (userId) => {
-  return service.patch(`/profile/${userId}/edit`);
+const editUserService = (userId, editedUser) => {
+  return service.patch(`/profile/${userId}/edit`, editedUser);
 };
 
 const blockUserAccount = () => {
