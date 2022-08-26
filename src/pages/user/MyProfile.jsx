@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from "react";
-import { verifyService } from "../../services/auth.services";
 import {
   editUserService,
   findOneUserService,
@@ -15,7 +14,7 @@ import {
 import Comment from "../../components/Comment";
 import { uploadService } from "../../services/upload.services";
 import EditProfileForm from "../../components/EditProfileForm";
-import { format, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
 
 function MyProfile() {
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ function MyProfile() {
   const [favourites, setFavourites] = useState([]);
   const [showFavourites, setShowFavourites] = useState(false);
   const [comments, setComments] = useState([]);
-  console.log("USERINFO", avatar);
   useEffect(() => {
     getUserInfo();
     getUserComments();
@@ -41,8 +39,6 @@ function MyProfile() {
   const getUserInfo = async () => {
     try {
       const response = await findOneUserService(userId);
-
-      console.log(response);
 
       const {
         avatar,
@@ -74,10 +70,8 @@ function MyProfile() {
       navigate("/error");
     }
   };
-  //Edit Profile
 
   // Like & Dislike
-
   const handleLike = async (id) => {
     try {
       await likeCommentService(id);
@@ -107,20 +101,16 @@ function MyProfile() {
   const [isDescriptiontValid, setIsDescriptionValid] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log(imgUrl);
-
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   // Avatar change
-
   const handleAvatarChange = async (event) => {
     const form = new FormData();
     form.append("image", event.target.files[0]);
     try {
       const response = await uploadService(form);
-      console.log(response.data);
       setImgUrl(response.data.imageUrl);
     } catch (error) {
       navigate("/error");
@@ -154,7 +144,6 @@ function MyProfile() {
       handleEditProfile();
     }
   };
-  console.log("COMENNTS", comments);
   return (
     <div className="wrapper">
       <div className="flex">
@@ -217,7 +206,11 @@ function MyProfile() {
         {favourites.length > 0 && (
           <div>
             <button
-            style={{width: "fit-content", maxWidth: "none", marginBottom:"32px"}}
+              style={{
+                width: "fit-content",
+                maxWidth: "none",
+                marginBottom: "32px",
+              }}
               className="button"
               onClick={() =>
                 setShowFavourites((previousValue) => !previousValue)
@@ -234,8 +227,20 @@ function MyProfile() {
               <div>
                 {favourites.map((eachFavourite) => (
                   <div>
-                    <Link className="link" style={{display:"flex", alignItems:"center", marginBottom:"16px"}} to={`/games/${eachFavourite.gameId}`}>
-                    <img className="comment-avatar" src={eachFavourite.gameImg} alt="game img" />
+                    <Link
+                      className="link"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "16px",
+                      }}
+                      to={`/games/${eachFavourite.gameId}`}
+                    >
+                      <img
+                        className="comment-avatar"
+                        src={eachFavourite.gameImg}
+                        alt="game img"
+                      />
                       <p>{eachFavourite.gameName}</p>
                     </Link>
                   </div>

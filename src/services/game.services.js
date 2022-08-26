@@ -1,9 +1,7 @@
 import service from "./config.services";
 
 const newGameValorationService = (gameId, newValoration) => {
-  console.log(newValoration)
   return service.post(`/games/${gameId}`, newValoration);
-  
 };
 
 const userGameValorationService = (gameId) => {
@@ -15,7 +13,7 @@ const allGameValorationService = (gameId) => {
 };
 
 const editGameValorationService = (gameId, editedValoration) => {
-  return service.patch(`/games/${gameId}`,editedValoration);
+  return service.patch(`/games/${gameId}`, editedValoration);
 };
 
 export {

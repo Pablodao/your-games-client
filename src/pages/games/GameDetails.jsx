@@ -43,10 +43,9 @@ function GameDetails() {
     if (!apiInfo) {
       try {
         const response = await gameDetailsService(gameId);
-        console.log("RESPONSE", response);
         setApiInfo(response.data);
       } catch (error) {
-        // navigate("/error");
+        navigate("/error");
       }
     }
   };
@@ -54,25 +53,21 @@ function GameDetails() {
   //* Game Valoration
   const [gameValorations, setGameValorations] = useState(0);
   const [userGameValoration, setUserGameValoration] = useState(0);
-  const [newGameValoration, setNewGameValoration] = useState(0);
   const [hasValoration, setHasValoration] = useState(false);
 
-  console.log(gameValorations);
   const getGameValorations = async () => {
     try {
       const response = await allGameValorationService(gameId);
-      console.log(response.data);
       let sum = 0;
       response.data.forEach((eachValoration) => {
         sum = sum + eachValoration.valoration;
-        console.log("sum", sum);
       });
 
       const mean = sum > 0 ? sum / response.data.length : 0;
 
       setGameValorations(mean.toFixed(1));
     } catch (error) {
-      //navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -83,8 +78,7 @@ function GameDetails() {
       !response.data ? setHasValoration(false) : setHasValoration(true);
       setIsFetching(false);
     } catch (error) {
-      console.log(error);
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -99,10 +93,9 @@ function GameDetails() {
       setUserGameValoration(valoration);
       getGameValorations();
     } catch (error) {
-      //navigate("/error");
+      navigate("/error");
     }
   };
-  console.log();
 
   const handleEditValoration = async (valoration) => {
     const editedValoration = {
@@ -113,7 +106,7 @@ function GameDetails() {
       setUserGameValoration(valoration);
       getGameValorations();
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -123,24 +116,21 @@ function GameDetails() {
   const getUserFavourites = async () => {
     try {
       const response = await userFavouriteGames();
-      console.log("Response.data", response.data);
       setUserFavourites(response.data.favourites);
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
-  console.log("User Favourites", userFavourites);
   const handleFavourite = async (gameId) => {
     const gameInfo = {
       gameName: apiInfo?.name,
       gameImg: apiInfo?.background_image,
     };
-    console.log("gameInfo", gameInfo);
     try {
       await favouriteGameService(gameId, gameInfo);
       getUserFavourites();
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -176,7 +166,7 @@ function GameDetails() {
       setComment("");
       getGameComments();
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -204,7 +194,7 @@ function GameDetails() {
 
       setComments(response.data);
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -215,7 +205,7 @@ function GameDetails() {
       await likeCommentService(id);
       getGameComments();
     } catch (error) {
-      // navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -224,7 +214,7 @@ function GameDetails() {
       await dislikeCommentService(id);
       getGameComments();
     } catch (error) {
-      //navigate("/error");
+      navigate("/error");
     }
   };
 
@@ -249,7 +239,7 @@ function GameDetails() {
         </h1>
 
         <img className="image" src={apiInfo?.background_image} alt="game" />
-        <div className="row" style={{marginBottom:"32px"}}>
+        <div className="row" style={{ marginBottom: "32px" }}>
           <StarRating
             handleSelect={
               hasValoration ? handleEditValoration : handleValoration
@@ -278,7 +268,7 @@ function GameDetails() {
             )}
           </button>
 
-          <p className="row" style={{ marginLeft: "16px"}}>
+          <p className="row" style={{ marginLeft: "16px" }}>
             <img
               className="icon"
               src="/images/star-solid.svg"
@@ -294,10 +284,10 @@ function GameDetails() {
             Website
           </a>
         </div>
-        
-        <p style={{maxWidth:"600px", textAlign:"justify" }}>{apiInfo?.description_raw}</p>
 
-        
+        <p style={{ maxWidth: "600px", textAlign: "justify" }}>
+          {apiInfo?.description_raw}
+        </p>
 
         <CommentInput
           commentTitle={commentTitle}

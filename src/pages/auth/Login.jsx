@@ -36,7 +36,6 @@ function Login() {
 
       await authenticateUser();
 
-      //Todo Reenviar al usuario
       navigate("/games");
     } catch (error) {
       navigate("/login");
@@ -73,8 +72,6 @@ function Login() {
           />
           {!isUserValid && <p>This field is required</p>}
 
-   
-
           <label>Password:</label>
           <input
             type="password"
@@ -85,8 +82,8 @@ function Login() {
           {!isPasswordValid && <p>Invalid password</p>}
 
           {errorMessage && <p>{errorMessage}</p>}
-   
-          <button style={{margin: "0 auto"}} className="button" type="submit">
+
+          <button style={{ margin: "0 auto" }} className="button" type="submit">
             Log in
           </button>
         </form>

@@ -8,11 +8,12 @@ function GamesGallery() {
   const [page, setPage] = useState(1);
   const [hasPrevious, setHasPrevious] = useState("");
   const [hasNext, setHasNext] = useState("");
-
+  const [isFetching, setIsFetching] = useState(true);
   const getGames = async () => {
     try {
       const response = await gameListService(page);
-      
+      setIsFetching(false);
+
       setGames(response.data.results);
       setHasNext(response.data.next);
       setHasPrevious(response.data.previous);
@@ -32,6 +33,12 @@ function GamesGallery() {
   const handlePreviousPage = () => {
     setPage((previousValue) => previousValue - 1);
   };
+
+  //* Error handle
+
+  if (isFetching === true) {
+    return <h3>...Loading</h3>;
+  }
 
   return (
     <div className="wrapper">

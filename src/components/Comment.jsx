@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { editCommentService } from "../services/comment.services";
-import { format, parseISO } from "date-fns";
+import {parseISO } from "date-fns";
 function Comment(props) {
   const {
     userId,

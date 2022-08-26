@@ -16,9 +16,6 @@ function Navbar() {
     return (
       <div className="navbar-wrapper">
         <div className="navbar">
-          {/* <Link className="navbar-link" to="/">
-            Home
-          </Link> */}
           <Link className="navbar-link" to="/games">
             Games Gallery
           </Link>
