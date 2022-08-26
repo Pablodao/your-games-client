@@ -1,11 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/auth.context";
 function Home() {
+  const { isUserActive } = useContext(AuthContext);
+  const navigate = useNavigate();
+  if (isUserActive) {
+    navigate("/games");
+  }
   return (
     <div className="wrapper">
       <div className="flex">
-        <h1 className="title" style={{textAlign:"center", marginBottom:"16px"}}>Welcome where games reviews get real</h1>
+        <h1
+          className="title"
+          style={{ textAlign: "center", marginBottom: "16px" }}
+        >
+          Welcome where games reviews get real
+        </h1>
         <p className="subtitle">
           Tired of paid reviews? Do you want to know if the game you are looking
           for has what you expected?
